@@ -192,10 +192,15 @@ class MultiHeadedAttention(nn.Module):
             mask = mask.unsqueeze(1)
         nbatches = query.size(0)
 
+        tmp = []
+        for l, x in zip(self.linears, (query, key, value)):
+            tmp.append(l(x).view(nbatches, -1, self.h, self.d_k).transpose(1, 2))
+        query, key, value = tmp
+
         # 1) Do all the linear projections in batch from d_model => h x d_k
-        query, key, value = \
-            [l(x).view(nbatches, -1, self.h, self.d_k).transpose(1, 2)
-             for l, x in zip(self.linears, (query, key, value))]
+        # query, key, value = \
+        #     [l(x).view(nbatches, -1, self.h, self.d_k).transpose(1, 2)
+        #      for l, x in zip(self.linears, (query, key, value))]
 
         # 2) Apply attention on all the projected vectors in batch.
         x, self.attn = attention(query, key, value, mask=mask,
@@ -243,7 +248,15 @@ class PositionalEncoding(nn.Module):
         div_term = torch.exp(torch.arange(0, d_model, 2) *
                              -(math.log(10000.0) / d_model))
         pe[:, 0::2] = torch.sin(position * div_term)
+        print("1")
+        print(pe[0:99,4])
+        print(pe[0:99, 5])
+        #print( torch.sin(position * div_term))
         pe[:, 1::2] = torch.cos(position * div_term)
+        print("2")
+        print(pe[0:99, 4])
+        print(pe[0:99, 5])
+        #print(torch.cos(position * div_term))
         pe = pe.unsqueeze(0)
         self.register_buffer('pe', pe)
 
@@ -258,7 +271,8 @@ class PositionalEncoding(nn.Module):
 # y = pe.forward(Variable(torch.zeros(1, 100, 20)))
 # plt.plot(np.arange(100), y[0, :, 4:8].data.numpy())
 # plt.legend(["dim %d"%p for p in [4,5,6,7]])
-# None
+# plt.show()
+None
 
 def make_model(src_vocab, tgt_vocab, N=6,
                d_model=512, d_ff=2048, h=8, dropout=0.1):
@@ -284,7 +298,7 @@ def make_model(src_vocab, tgt_vocab, N=6,
 
 
 # Small example model.
-tmp_model = make_model(10, 10, 2)
+#tmp_model = make_model(10, 10, 2)
 None
 
 
