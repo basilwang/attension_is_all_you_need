@@ -651,9 +651,9 @@ devices = [0, 1]
 # Train the simple copy task.
 V = 11
 criterion = LabelSmoothing(size=V, padding_idx=0, smoothing=0.0)
-criterion.cuda(devices)
+criterion.cuda()
 model = make_model(V, V, N=2)
-model.cuda(devices)
+model.cuda()
 model_opt = NoamOpt(model.src_embed[0].d_model, 1, 400,
         torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
 
