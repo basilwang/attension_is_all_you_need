@@ -608,6 +608,7 @@ class MultiGPULossCompute:
             # Sum and normalize loss
             l = nn.parallel.gather(loss,
                                    target_device=self.devices[0])
+            print("l:" ,l)
             l = l.sum().item() / normalize
             total += l.data.item()
 
