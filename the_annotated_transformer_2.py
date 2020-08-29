@@ -649,7 +649,7 @@ if True:
     model_par = nn.DataParallel(model, device_ids=devices)
 None
 
-if False:
+if True:
     model_opt = NoamOpt(model.src_embed[0].d_model, 1, 2000,
                         torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
     for epoch in range(10):
