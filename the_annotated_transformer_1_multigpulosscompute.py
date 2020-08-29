@@ -650,7 +650,9 @@ devices = [0, 1]
 
 # Train the simple copy task.
 V = 11
-criterion = LabelSmoothing(size=V, padding_idx=0, smoothing=0.0)
+padding_idx = torch.IntTensor(0)
+padding_idx = padding_idx.cuda()
+criterion = LabelSmoothing(size=V, padding_idx=padding_idx, smoothing=0.0)
 criterion.cuda()
 model = make_model(V, V, N=2)
 model.cuda()
