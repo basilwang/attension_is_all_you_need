@@ -620,7 +620,7 @@ class MultiGPULossCompute:
             print("finally l :", l)
             total += l.data.item()
             print("total:", l)
-
+            l = Variable(l, requires_grad=True)
             # Backprop loss to output of transformer
             if self.opt is not None:
                 l.backward()
