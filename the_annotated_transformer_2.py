@@ -595,8 +595,11 @@ class MultiGPULossCompute:
         # Divide generating into chunks.
         chunk_size = self.chunk_size
         print("chunk_size:", chunk_size)
+        print("out_scatter.type", type(out_scatter))
         print("out_scatter[0].type", type(out_scatter[0]))
         print("out_scatter[0].size(1)",out_scatter[0].size(1))
+        print("out_scatter[1].size(1)",out_scatter[1].size(1))
+        print("out_scatter[2].size(1)", out_scatter[2].size(1))
         for i in range(0, out_scatter[0].size(1), chunk_size):
             # Predict distributions
             out_column = [[Variable(o[:, i:i + chunk_size].data,
