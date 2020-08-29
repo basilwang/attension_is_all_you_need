@@ -586,12 +586,14 @@ class MultiGPULossCompute:
                                           devices=self.devices)
         out_scatter = nn.parallel.scatter(out,
                                           target_gpus=self.devices)
+        print("out_scatter:", out_scatter)
         out_grad = [[] for _ in out_scatter]
         targets = nn.parallel.scatter(targets,
                                       target_gpus=self.devices)
-
+        print("targets:", targets)
         # Divide generating into chunks.
         chunk_size = self.chunk_size
+        print("chunk_size:", chunk_size)
         for i in range(0, out_scatter[0].size(1), chunk_size):
             # Predict distributions
             out_column = [[Variable(o[:, i:i + chunk_size].data,
@@ -607,10 +609,12 @@ class MultiGPULossCompute:
 
             # Sum and normalize loss
             l = nn.parallel.gather(loss,
-                                   target_device=self.devices)
+                                   target_device=self.devices[0])
             print("l:" ,l)
             l = l.sum().item() / normalize
+            print("finally l :", l)
             total += l.data.item()
+            print("total:", l)
 
             # Backprop loss to output of transformer
             if self.opt is not None:
