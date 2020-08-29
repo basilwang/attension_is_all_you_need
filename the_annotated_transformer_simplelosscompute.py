@@ -630,7 +630,7 @@ class MultiGPULossCompute:
 
 
 # GPUs to use
-devices = [0, 1]
+devices = [0]
 #devices = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if True:
