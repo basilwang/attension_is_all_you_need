@@ -604,6 +604,9 @@ class MultiGPULossCompute:
             out_column = [[Variable(o[:, i:i + chunk_size].data,
                                     requires_grad=self.opt is not None)]
                           for o in out_scatter]
+            print("out_column.size", len(out_column))
+            print("out_column[0].size", len(out_column[0]))
+            print("out_column[0][0].size", len(out_column[0][0]))
             gen = nn.parallel.parallel_apply(generator, out_column)
 
             # Compute loss.
