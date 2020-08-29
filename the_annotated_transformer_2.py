@@ -587,6 +587,7 @@ class MultiGPULossCompute:
         out_scatter = nn.parallel.scatter(out,
                                           target_gpus=self.devices)
         print("out_scatter:", out_scatter)
+        print("out_scatter's size:", out_scatter.size())
         out_grad = [[] for _ in out_scatter]
         targets = nn.parallel.scatter(targets,
                                       target_gpus=self.devices)
@@ -665,12 +666,12 @@ if True:
                                       devices=devices, opt=model_opt)
                   )
 
-        model_par.eval()
-        loss = run_epoch((rebatch(pad_idx, b) for b in valid_iter),
-                         model_par,
-                         MultiGPULossCompute(model.generator, criterion,
-                                             devices=devices, opt=None)
-                        )
+        # model_par.eval()
+        # loss = run_epoch((rebatch(pad_idx, b) for b in valid_iter),
+        #                  model_par,
+        #                  MultiGPULossCompute(model.generator, criterion,
+        #                                      devices=devices, opt=None)
+        #                 )
 
         print(loss)
 else:
