@@ -587,7 +587,7 @@ class MultiGPULossCompute:
         out_scatter = nn.parallel.scatter(out,
                                           target_gpus=self.devices)
         print("out_scatter:", out_scatter)
-        print("out_scatter's size:", out_scatter.size())
+        print("out_scatter's size:", len(out_scatter))
         out_grad = [[] for _ in out_scatter]
         targets = nn.parallel.scatter(targets,
                                       target_gpus=self.devices)
