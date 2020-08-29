@@ -648,10 +648,10 @@ devices = [0, 1]
 if True:
     pad_idx = TGT.vocab.stoi["<blank>"]
     model = make_model(len(SRC.vocab), len(TGT.vocab), N=6)
-    model.cuda()
+    model.cuda(devices)
     criterion = LabelSmoothing(size=len(TGT.vocab), padding_idx=pad_idx, smoothing=0.1)
-    criterion.cuda()
-    BATCH_SIZE = 100
+    criterion.cuda(devices)
+    BATCH_SIZE = 12000
     train_iter = MyIterator(train, batch_size=BATCH_SIZE, device=0,
                             repeat=False, sort_key=lambda x: (len(x.src), len(x.trg)),
                             batch_size_fn=batch_size_fn, train=True)
@@ -672,14 +672,14 @@ if True:
                                       devices=devices, opt=model_opt)
                   )
 
-        # model_par.eval()
-        # loss = run_epoch((rebatch(pad_idx, b) for b in valid_iter),
-        #                  model_par,
-        #                  MultiGPULossCompute(model.generator, criterion,
-        #                                      devices=devices, opt=None)
-        #                 )
+        model_par.eval()
+        loss = run_epoch((rebatch(pad_idx, b) for b in valid_iter),
+                         model_par,
+                         MultiGPULossCompute(model.generator, criterion,
+                                             devices=devices, opt=None)
+                        )
 
-        # print(loss)
+        print(loss)
 else:
     model = torch.load("iwslt.pt")
 
