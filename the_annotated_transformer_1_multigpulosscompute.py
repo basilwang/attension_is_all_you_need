@@ -456,8 +456,9 @@ class LabelSmoothing(nn.Module):
 def data_gen(V, batch, nbatches):
     "Generate random data for a src-tgt copy task."
     for i in range(nbatches):
-        data = torch.from_numpy(np.random.randint(1, V, size=(batch, 10))).cuda
+        data = torch.from_numpy(np.random.randint(1, V, size=(batch, 10)))
         data[:, 0] = 1
+        data.cuda()
         src = Variable(data, requires_grad=False)
         tgt = Variable(data, requires_grad=False)
         yield Batch(src, tgt, 0)
@@ -643,7 +644,7 @@ class MultiGPULossCompute:
 
 
 # GPUs to use
-devices = [0]
+devices = [0,1]
 # devices = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
