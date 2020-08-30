@@ -600,17 +600,27 @@ class MultiGPULossCompute:
                                           devices=self.devices)
         out_scatter = nn.parallel.scatter(out,
                                           target_gpus=self.devices)
+        print("out_scatter:", out_scatter)
+        print("out_scatter's size:", len(out_scatter))
         out_grad = [[] for _ in out_scatter]
         targets = nn.parallel.scatter(targets,
                                       target_gpus=self.devices)
-
+        print("targets:", targets)
         # Divide generating into chunks.
         chunk_size = self.chunk_size
+        print("chunk_size:", chunk_size)
+        print("out_scatter.type", type(out_scatter))
+        print("out_scatter[0].type", type(out_scatter[0]))
+        print("out_scatter[0].size(1)", out_scatter[0].size(1))
+        print("out_scatter[1].size(1)", out_scatter[1].size(1))
         for i in range(0, out_scatter[0].size(1), chunk_size):
             # Predict distributions
             out_column = [[Variable(o[:, i:i + chunk_size].data,
                                     requires_grad=self.opt is not None)]
                           for o in out_scatter]
+            print("out_column.size", len(out_column))
+            print("out_column[0].size", len(out_column[0]))
+            print("out_column[0][0].size", len(out_column[0][0]))
             gen = nn.parallel.parallel_apply(generator, out_column)
 
             # Compute loss.
@@ -622,9 +632,11 @@ class MultiGPULossCompute:
             # Sum and normalize loss
             l = nn.parallel.gather(loss,
                                    target_device=self.devices[0])
+            print("l:", l)
             l = l.sum().item() / normalize
+            print("finally l :", l)
             total += l.data.item()
-
+            print("total:", l)
             # Backprop loss to output of transformer
             if self.opt is not None:
                 l.backward()
@@ -657,12 +669,12 @@ model = make_model(V, V, N=2)
 model.cuda()
 model_opt = NoamOpt(model.src_embed[0].d_model, 1, 400,
         torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
-model_par = nn.DataParallel(model, device_ids=devices)
+# model_par = nn.DataParallel(model, device_ids=devices)
 for epoch in range(10):
     model.train()
-    run_epoch(data_gen(V, 30, 20), model_par,
+    run_epoch(data_gen(V, 30, 20), model,
               MultiGPULossCompute(model.generator, criterion,
-                                  devices=devices, opt=None))
+                                  devices=devices, opt=model_opt))
     # model.eval()
     # print(run_epoch(data_gen(V, 30, 5), model_par,
     #                 MultiGPULossCompute(model.generator, criterion,
