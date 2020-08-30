@@ -621,8 +621,8 @@ class MultiGPULossCompute:
             out_column = []
             for o in out_scatter:
                 d = o[:, i:i + chunk_size].data
-                print("o[:, i:i + chunk_size].data",d)
                 d = [Variable(d, requires_grad=self.opt is not None)]
+                print("o[:, ",i,":",i,"," + "chunk_size].data", d[0])
                 out_column.append(d)
             #print("out_column.type()", out_column.type())
             #out_column = out_column.requires_grad_()
