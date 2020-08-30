@@ -600,19 +600,19 @@ class MultiGPULossCompute:
                                           devices=self.devices)
         out_scatter = nn.parallel.scatter(out,
                                           target_gpus=self.devices)
-        print("out_scatter:", out_scatter)
-        print("out_scatter's size:", len(out_scatter))
+        # print("out_scatter:", out_scatter)
+        # print("out_scatter's size:", len(out_scatter))
         out_grad = [[] for _ in out_scatter]
         targets = nn.parallel.scatter(targets,
                                       target_gpus=self.devices)
-        print("targets:", targets)
+        # print("targets:", targets)
         # Divide generating into chunks.
         chunk_size = self.chunk_size
-        print("chunk_size:", chunk_size)
-        print("out_scatter.type", type(out_scatter))
-        print("out_scatter[0].type", type(out_scatter[0]))
-        print("out_scatter[0].size(1)", out_scatter[0].size(1))
-        print("out_scatter[1].size(1)", out_scatter[1].size(1))
+        # print("chunk_size:", chunk_size)
+        # print("out_scatter.type", type(out_scatter))
+        # print("out_scatter[0].type", type(out_scatter[0]))
+        # print("out_scatter[0].size(1)", out_scatter[0].size(1))
+        # print("out_scatter[1].size(1)", out_scatter[1].size(1))
         for i in range(0, out_scatter[0].size(1), chunk_size):
             # Predict distributions
             # out_column = [[Variable(o[:, i:i + chunk_size].data,
@@ -622,15 +622,15 @@ class MultiGPULossCompute:
             for o in out_scatter:
                 d = o[:, i:i + chunk_size].data
                 d = [Variable(d, requires_grad=self.opt is not None)]
-                print("o[:, ",i,":",i,"," + "chunk_size].data", d[0])
+                # print("o[:, ",i,":",i,"," + "chunk_size].data", d[0])
                 out_column.append(d)
             #print("out_column.type()", out_column.type())
             #out_column = out_column.requires_grad_()
 
-            print("out_column.size", len(out_column))
-            print("out_column[0][0].is_leaf",out_column[0][0].is_leaf)
-            print("out_column[0][0].shape", out_column[0][0].shape)
-            print("out_column[0][0].requires_grad", out_column[0][0].requires_grad)
+            # print("out_column.size", len(out_column))
+            # print("out_column[0][0].is_leaf",out_column[0][0].is_leaf)
+            # print("out_column[0][0].shape", out_column[0][0].shape)
+            # print("out_column[0][0].requires_grad", out_column[0][0].requires_grad)
             gen = nn.parallel.parallel_apply(generator, out_column)
 
             # Compute loss.
@@ -647,10 +647,10 @@ class MultiGPULossCompute:
             l = l.sum().item() / normalize
             print("finally l :", l)
             total += l.data.item()
-            print("total:", l)
+            # print("total:", l)
             #l = l.requires_grad_()
-            print("type l",type(l))
-            print("l.type()", l.type())
+            # print("type l",type(l))
+            # print("l.type()", l.type())
             l = l.float().requires_grad_()
             # Backprop loss to output of transformer
             if self.opt is not None:
