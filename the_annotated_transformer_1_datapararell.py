@@ -655,6 +655,7 @@ class MultiGPULossCompute:
             # Backprop loss to output of transformer
             if self.opt is not None:
                 for j, l in enumerate(loss):
+                    out_column[j][0].requires_grad_()
                     out_column[j][0].retain_grad()
                     print("out_column[",j,"][0].grad", out_column[j][0].grad)
                     print("out_column[",j,"][0].require_grad", out_column[j][0].requires_grad)
