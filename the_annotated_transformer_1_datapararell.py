@@ -620,9 +620,12 @@ class MultiGPULossCompute:
                           for o in out_scatter]
             #print("out_column.type()", out_column.type())
             #out_column = out_column.requires_grad_()
+
             print("out_column.size", len(out_column))
             print("out_column[0].size", len(out_column[0]))
             print("out_column[0][0].size", len(out_column[0][0]))
+            out_column[0][0].retain_grad()
+            out_column[1][0].retain_grad()
             gen = nn.parallel.parallel_apply(generator, out_column)
 
             # Compute loss.
