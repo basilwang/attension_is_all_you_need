@@ -629,7 +629,7 @@ class MultiGPULossCompute:
 
             print("out_column.size", len(out_column))
             print("out_column[0][0].is_leaf",out_column[0][0].is_leaf)
-            print("out_column[0][0].shape", out_column[0][0].shape())
+            print("out_column[0][0].shape", out_column[0][0].shape)
             print("out_column[0][0].requires_grad", out_column[0][0].requires_grad)
             out_column[0][0].retain_grad()
             out_column[1][0].retain_grad()
