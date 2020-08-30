@@ -654,24 +654,24 @@ class MultiGPULossCompute:
             l = l.float().requires_grad_()
             # Backprop loss to output of transformer
             if self.opt is not None:
-                for j, l in enumerate(loss):
-                    out_column[j][0].requires_grad_()
-                    out_column[j][0].retain_grad()
-                    print("out_column[",j,"][0].grad", out_column[j][0].grad)
-                    print("out_column[",j,"][0].require_grad", out_column[j][0].requires_grad)
+                # for j, l in enumerate(loss):
+                #     out_column[j][0].requires_grad_()
+                #     out_column[j][0].retain_grad()
+                #     print("out_column[",j,"][0].grad", out_column[j][0].grad)
+                #     print("out_column[",j,"][0].require_grad", out_column[j][0].requires_grad)
                 l.retain_grad()
                 l.backward()
-                for j, l in enumerate(loss):
-                    if out_column[j][0].grad is not None:
-                        out_grad[j].append(out_column[j][0].grad.data.clone())
+                # for j, l in enumerate(loss):
+                #     if out_column[j][0].grad is not None:
+                #         out_grad[j].append(out_column[j][0].grad.data.clone())
 
         # Backprop all loss through transformer.
         if self.opt is not None:
-            out_grad = [Variable(torch.cat(og, dim=1)) for og in out_grad]
-            o1 = out
-            o2 = nn.parallel.gather(out_grad,
-                                    target_device=self.devices[0])
-            o1.backward(gradient=o2)
+            # out_grad = [Variable(torch.cat(og, dim=1)) for og in out_grad]
+            # o1 = out
+            # o2 = nn.parallel.gather(out_grad,
+            #                         target_device=self.devices[0])
+            # o1.backward(gradient=o2)
             self.opt.step()
             self.opt.optimizer.zero_grad()
         return total * normalize
