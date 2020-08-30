@@ -660,12 +660,10 @@ model_opt = NoamOpt(model.src_embed[0].d_model, 1, 400,
 for epoch in range(10):
     model.train()
     run_epoch(data_gen(V, 30, 20), model,
-              MultiGPULossCompute(model.generator, criterion,
-                                  devices=devices, opt=model_opt))
+              SimpleLossCompute(model.generator, criterion, model_opt))
     model.eval()
     print(run_epoch(data_gen(V, 30, 5), model,
-                    MultiGPULossCompute(model.generator, criterion,
-                                        devices=devices, opt=None)))
+                    SimpleLossCompute(model.generator, criterion, None)))
 
 
 # if True:
