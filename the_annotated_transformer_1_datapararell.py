@@ -691,10 +691,10 @@ model = make_model(V, V, N=2)
 model.cuda()
 model_opt = NoamOpt(model.src_embed[0].d_model, 1, 400,
         torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
-# model_par = nn.DataParallel(model, device_ids=devices)
+model_par = nn.DataParallel(model, device_ids=devices)
 for epoch in range(10):
     model.train()
-    run_epoch(data_gen(V, 30, 20), model,
+    run_epoch(data_gen(V, 30, 20), model_par,
               MultiGPULossCompute(model.generator, criterion,
                                   devices=devices, opt=model_opt))
     # model.eval()
