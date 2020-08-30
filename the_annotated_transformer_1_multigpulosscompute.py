@@ -285,8 +285,8 @@ def make_model(src_vocab, tgt_vocab, N=6,
         Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N),
         Decoder(DecoderLayer(d_model, c(attn), c(attn),
                              c(ff), dropout), N),
-        nn.Sequential(Embeddings(d_model, src_vocab), c(position)),
-        nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),
+        nn.Sequential(Embeddings(d_model, src_vocab)),
+        nn.Sequential(Embeddings(d_model, tgt_vocab)),
         Generator(d_model, tgt_vocab))
 
     # This was important from their code.
