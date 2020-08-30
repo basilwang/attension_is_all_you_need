@@ -624,6 +624,8 @@ class MultiGPULossCompute:
             print("out_column.size", len(out_column))
             print("out_column[0].size", len(out_column[0]))
             print("out_column[0][0].size", len(out_column[0][0]))
+            print("out_column[0][0].is_leaf",out_column[0][0].is_leaf)
+            print("out_column[0][0].requires_grad", out_column[0][0].requires_grad)
             out_column[0][0].retain_grad()
             out_column[1][0].retain_grad()
             gen = nn.parallel.parallel_apply(generator, out_column)
@@ -672,7 +674,7 @@ class MultiGPULossCompute:
 
 # GPUs to use
 devices = [0, 1]
-# devices = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#devices = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 
