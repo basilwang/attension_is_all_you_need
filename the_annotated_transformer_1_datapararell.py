@@ -648,6 +648,9 @@ class MultiGPULossCompute:
                 for j, l in enumerate(loss):
                     print("out_column[j][0]",out_column[j][0])
                     print("out_column[j][0].grad",out_column[j][0].grad)
+                    print("out_column.require_grad",out_column.requires_grad)
+                    print("out_column[j].require_grad", out_column[j].requires_grad)
+                    print("out_column[j][0].require_grad", out_column[j][0].requires_grad)
                     out_grad[j].append(out_column[j][0].grad.data.clone())
 
         # Backprop all loss through transformer.
