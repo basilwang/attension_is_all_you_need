@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import math, copy, time
 from torch.autograd import Variable
 # For data loading.
-from torchtext import data, datasets
+#from torchtext import data, datasets
 import matplotlib.pyplot as plt
 import seaborn
 
@@ -458,7 +458,7 @@ def data_gen(V, batch, nbatches):
     for i in range(nbatches):
         data = torch.from_numpy(np.random.randint(1, V, size=(batch, 10)))
         data[:, 0] = 1
-        data = data.cuda()
+        #data = data.cuda()
         src = Variable(data, requires_grad=False)
         tgt = Variable(data, requires_grad=False)
         yield Batch(src, tgt, 0)
@@ -622,15 +622,14 @@ class MultiGPULossCompute:
             for o in out_scatter:
                 d = o[:, i:i + chunk_size].data
                 print("o[:, i:i + chunk_size].data",d)
-                d = Variable(d, requires_grad=self.opt is not None)
+                d = [Variable(d, requires_grad=self.opt is not None)]
                 out_column.append(d)
             #print("out_column.type()", out_column.type())
             #out_column = out_column.requires_grad_()
 
             print("out_column.size", len(out_column))
-            print("out_column[0].size", len(out_column[0]))
-            print("out_column[0][0].size", len(out_column[0][0]))
             print("out_column[0][0].is_leaf",out_column[0][0].is_leaf)
+            print("out_column[0][0].shape", out_column[0][0].shape())
             print("out_column[0][0].requires_grad", out_column[0][0].requires_grad)
             out_column[0][0].retain_grad()
             out_column[1][0].retain_grad()
@@ -687,9 +686,9 @@ devices = [0, 1]
 # Train the simple copy task.
 V = 11
 criterion = LabelSmoothing(size=V, padding_idx=0, smoothing=0.0)
-criterion.cuda()
+#criterion.cuda()
 model = make_model(V, V, N=2)
-model.cuda()
+#model.cuda()
 model_opt = NoamOpt(model.src_embed[0].d_model, 1, 400,
         torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
 # model_par = nn.DataParallel(model, device_ids=devices)
