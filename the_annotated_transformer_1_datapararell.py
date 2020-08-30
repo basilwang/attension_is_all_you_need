@@ -663,10 +663,10 @@ for epoch in range(10):
     run_epoch(data_gen(V, 30, 20), model_par,
               MultiGPULossCompute(model.generator, criterion,
                                   devices=devices, opt=None))
-    model.eval()
-    print(run_epoch(data_gen(V, 30, 5), model_par,
-                    MultiGPULossCompute(model.generator, criterion,
-                                        devices=devices, opt=None)))
+    # model.eval()
+    # print(run_epoch(data_gen(V, 30, 5), model_par,
+    #                 MultiGPULossCompute(model.generator, criterion,
+    #                                     devices=devices, opt=None)))
 
 
 # if True:
