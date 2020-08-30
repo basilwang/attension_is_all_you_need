@@ -615,9 +615,15 @@ class MultiGPULossCompute:
         print("out_scatter[1].size(1)", out_scatter[1].size(1))
         for i in range(0, out_scatter[0].size(1), chunk_size):
             # Predict distributions
-            out_column = [[Variable(o[:, i:i + chunk_size].data,
-                                    requires_grad=self.opt is not None)]
-                          for o in out_scatter]
+            # out_column = [[Variable(o[:, i:i + chunk_size].data,
+            #                         requires_grad=self.opt is not None)]
+            #               for o in out_scatter]
+            out_column = []
+            for o in out_scatter:
+                d = o[:, i:i + chunk_size].data
+                print("o[:, i:i + chunk_size].data",d)
+                d = Variable(d, requires_grad=self.opt is not None)
+                out_column.append(d)
             #print("out_column.type()", out_column.type())
             #out_column = out_column.requires_grad_()
 
