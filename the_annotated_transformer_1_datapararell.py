@@ -631,8 +631,6 @@ class MultiGPULossCompute:
             print("out_column[0][0].is_leaf",out_column[0][0].is_leaf)
             print("out_column[0][0].shape", out_column[0][0].shape)
             print("out_column[0][0].requires_grad", out_column[0][0].requires_grad)
-            out_column[0][0].retain_grad()
-            out_column[1][0].retain_grad()
             gen = nn.parallel.parallel_apply(generator, out_column)
 
             # Compute loss.
@@ -656,12 +654,13 @@ class MultiGPULossCompute:
             l = l.float().requires_grad_()
             # Backprop loss to output of transformer
             if self.opt is not None:
+                for j, l in enumerate(loss):
+                    out_column[j][0].retain_grad()
+                    print("out_column[",j,"][0].grad", out_column[j][0].grad)
+                    print("out_column[",j,"][0].require_grad", out_column[j][0].requires_grad)
                 l.retain_grad()
                 l.backward()
                 for j, l in enumerate(loss):
-                    print("out_column[j][0]",out_column[j][0])
-                    print("out_column[j][0].grad", out_column[j][0].grad)
-                    print("out_column[j][0].require_grad", out_column[j][0].requires_grad)
                     if out_column[j][0].grad is not None:
                         out_grad[j].append(out_column[j][0].grad.data.clone())
 
