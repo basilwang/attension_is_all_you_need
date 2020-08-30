@@ -660,7 +660,7 @@ model_opt = NoamOpt(model.src_embed[0].d_model, 1, 400,
 for epoch in range(10):
     model.train()
     run_epoch(data_gen(V, 30, 20), model,
-              SimpleLossCompute(model.generator, criterion, model_opt))
+              SimpleLossCompute(model.generator, criterion, None))
     model.eval()
     print(run_epoch(data_gen(V, 30, 5), model,
                     SimpleLossCompute(model.generator, criterion, None)))
