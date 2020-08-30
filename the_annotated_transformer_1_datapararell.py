@@ -616,7 +616,7 @@ class MultiGPULossCompute:
         for i in range(0, out_scatter[0].size(1), chunk_size):
             # Predict distributions
             out_column = [[Variable(o[:, i:i + chunk_size].data,
-                                    requires_grad=self.opt is not None, retain_graph=self.opt is not None)]
+                                    requires_grad=self.opt is not None)]
                           for o in out_scatter]
             print("out_column.type()", out_column.type())
             #out_column = out_column.requires_grad_()
@@ -646,7 +646,7 @@ class MultiGPULossCompute:
             l = l.float().requires_grad_()
             # Backprop loss to output of transformer
             if self.opt is not None:
-                #l.backward()
+                l.backward(retain_graph=True)
                 for j, l in enumerate(loss):
                     print("out_column[j][0]",out_column[j][0])
                     print("out_column[j][0].grad", out_column[j][0].grad)
