@@ -631,12 +631,14 @@ class MultiGPULossCompute:
 
             # Sum and normalize loss
             l = nn.parallel.gather(loss,
-                                   target_device=self.devices[0],requires_grad=True)
+                                   target_device=self.devices[0])
+
             print("l:", l)
             l = l.sum().item() / normalize
             print("finally l :", l)
             total += l.data.item()
             print("total:", l)
+            l = l.requires_grad_()
             # Backprop loss to output of transformer
             if self.opt is not None:
                 l.backward()
